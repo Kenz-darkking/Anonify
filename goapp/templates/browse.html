@@ -25,10 +25,11 @@
 	<section class="browse-section">
 		<div class="browse-container">
 			<h1>Find messages written for you</h1>
+			<p class="browse-intro">Search a name, then explore anonymous messages paired with songs that match the feeling.</p>
 			<form method="GET" action="/browse" class="search-form">
 				<div class="search-input-group">
 					<input type="text" name="search" placeholder="Enter your name to find messages..." value="{{ .SearchQuery }}" required>
-					<button type="submit" class="btn btn-primary">🔍 Search</button>
+					<button type="submit" class="btn btn-primary">Browse</button>
 				</div>
 			</form>
 
