@@ -24,8 +24,17 @@
 
   <section class="hero">
     <div class="hero-content">
+      <div class="hero-badge">Anonymous messages, matched with the right song</div>
       <h1 class="hero-title">a bunch of the untold words, sent through the song</h1>
       <p class="hero-subtitle">Express your untold message through the song.</p>
+      <form method="GET" action="/browse" class="hero-search">
+        <label class="hero-search-label" for="heroSearch">Search a name to browse messages</label>
+        <div class="hero-search-row">
+          <input id="heroSearch" type="text" name="search" placeholder="Type a name, then browse..." aria-label="Search messages by name">
+          <button type="submit" class="btn btn-primary">Browse</button>
+        </div>
+        <p class="hero-search-note">Search = browse. Enter any name to find matching messages.</p>
+      </form>
       <div class="cta-buttons">
         <a href="/submit" class="btn btn-primary">
           <span class="btn-icon">✏️</span> Tell Your Story
