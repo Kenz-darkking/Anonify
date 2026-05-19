@@ -2,8 +2,8 @@ package main
 
 import (
 	"embed"
-	"html/template"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -48,7 +48,7 @@ func main() {
 	defer db.Close()
 
 	r := gin.Default()
-	
+
 	// Create FuncMap
 	funcMap := template.FuncMap{
 		"trimMessage": trimMessage,
@@ -57,7 +57,7 @@ func main() {
 		"add":         func(a, b int) int { return a + b },
 		"sub":         func(a, b int) int { return a - b },
 	}
-	
+
 	// Parse templates with FuncMap
 	tmpl := template.New("").Funcs(funcMap)
 	loadedTemplates, err := tmpl.ParseFS(templateFS, "templates/*.html")
@@ -102,16 +102,27 @@ func main() {
 			return
 		}
 
+		// enforce Spotify-only links
+		if detectSource(songLink) != "spotify" {
+			c.HTML(http.StatusBadRequest, "submit.html", PageData{
+				SiteName: cfg.SiteName,
+				Title:    "Tell Your Story",
+				Active:   "submit",
+				Error:    "Only Spotify track links are allowed.",
+			})
+			return
+		}
+
 		media := ExtractSongMetadata(songLink)
 		_, err := db.CreateMessage(MessageInput{
-			ToName:        toName,
-			Message:       message,
-			SongLink:      media.SongLink,
-			SongSource:    media.SongSource,
-			SongTitle:     media.SongTitle,
-			SongThumbnail: media.SongThumbnail,
-			SongEmbedURL:  media.SongEmbedURL,
-			SongAudioURL:  media.SongAudioURL,
+			ToName:         toName,
+			Message:        message,
+			SongLink:       media.SongLink,
+			SongSource:     media.SongSource,
+			SongTitle:      media.SongTitle,
+			SongThumbnail:  media.SongThumbnail,
+			SongEmbedURL:   media.SongEmbedURL,
+			SongAudioURL:   media.SongAudioURL,
 			SongProviderID: media.SongProviderID,
 		})
 		if err != nil {
@@ -182,7 +193,7 @@ func main() {
 			return
 		}
 		if msg == nil {
-			c.HTML(http.StatusNotFound, "detail.html", PageData{SiteName: cfg.SiteName, Title: "Message" , Active: "browse", Error: "Message not found"})
+			c.HTML(http.StatusNotFound, "detail.html", PageData{SiteName: cfg.SiteName, Title: "Message", Active: "browse", Error: "Message not found"})
 			return
 		}
 		c.HTML(http.StatusOK, "detail.html", PageData{SiteName: cfg.SiteName, Title: "Message for " + msg.ToName, Active: "browse", MessageItem: msg})
