@@ -10,7 +10,33 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add scroll animations
     observeElements();
+
+    // Attach Spotify-only validation to submit form
+    const form = document.querySelector('.message-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const input = document.getElementById('song_link');
+            if (!input) return;
+            const val = input.value.trim();
+            if (!isSpotifyTrackLink(val)) {
+                e.preventDefault();
+                showNotification('Only Spotify track links are allowed.', 'error', 4000);
+                input.focus();
+                return false;
+            }
+        });
+    }
 });
+
+/**
+ * Check whether a link is a Spotify track link
+ */
+function isSpotifyTrackLink(link) {
+    if (!link) return false;
+    // Accept open.spotify.com/track/... or spotify:track:...
+    const re = /(^https?:\/\/([a-z0-9-]+\.)?open\.spotify\.com\/track\/[A-Za-z0-9]+)|(^spotify:track:[A-Za-z0-9]+)/i;
+    return re.test(link);
+}
 
 /**
  * Initialize horizontal carousel scrolling
