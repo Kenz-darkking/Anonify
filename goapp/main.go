@@ -271,7 +271,7 @@ func main() {
 func loadConfig() AppConfig {
 	dsn := os.Getenv("SENDTHESONG_DSN")
 	if dsn == "" {
-		dsn = "root:@tcp(127.0.0.1:3306)/sendthesong?parseTime=true&loc=Local"
+		dsn = "root:root@tcp(127.0.0.1:3306)/sendthesong?parseTime=true&loc=Local"
 	}
 	return AppConfig{
 		DSN:      dsn,

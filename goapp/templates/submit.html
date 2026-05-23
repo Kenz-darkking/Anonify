@@ -2,64 +2,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Tell Your Story - SendTheSong</title>
-	<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="/assets/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tell Your Story - Anonify</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#2F6A3F'
+          },
+          fontFamily: {
+            sans: ['Quicksand', 'ui-sans-serif', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Quicksand', sans-serif; }
+    body::before,
+    body::after { content:''; position:fixed; border-radius:9999px; filter:blur(84px); opacity:.36; pointer-events:none; z-index:-10; }
+    body::before { top:-4rem; right:-8rem; width:20rem; height:20rem; background: rgba(47,106,63,.18); }
+    body::after { bottom:-6rem; left:-8rem; width:24rem; height:24rem; background: rgba(148,175,155,.20); }
+    .nav-link { color: #64748b; transition: color .2s ease, font-weight .2s ease; }
+    .nav-link.active, .nav-link:hover { color: #2F6A3F; font-weight: 600; }
+    .alert { border-width: 1px; border-radius: 1rem; padding: 1rem; }
+    .alert-error { background: #fee2e2; border-color: #fecaca; color: #991b1b; }
+    .alert-success { background: #d1fae5; border-color: #a7f3d0; color: #065f46; }
+  </style>
 </head>
-<body>
-	<nav class="navbar">
-		<div class="nav-container">
-			<a href="/" class="logo">sendthesong</a>
-			<div class="nav-menu">
-				<a href="/" class="nav-link">Home</a>
-				<a href="/submit" class="nav-link active">Tell Your Story</a>
-				<a href="/browse" class="nav-link">Browse</a>
-				<a href="/history" class="nav-link">History</a>
-				<a href="/support" class="nav-link">Support</a>
-			</div>
-		</div>
-	</nav>
+<body class="min-h-screen bg-[#f4f5fb] text-slate-900">
+  <nav class="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-xl shadow-sm">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4">
+      <a href="/" class="text-2xl font-semibold tracking-tight text-[#2F6A3F]">Anonify</a>
+      <div class="hidden items-center gap-5 md:flex">
+        <a href="/" class="nav-link text-sm font-medium">Home</a>
+        <a href="/submit" class="nav-link active text-sm font-medium">Express Your Message</a>
+        <a href="/browse" class="nav-link text-sm font-medium">Browse</a>
+        <a href="/history" class="nav-link text-sm font-medium">History</a>
+        <a href="/support" class="nav-link text-sm font-medium">Support</a>
+      </div>
+    </div>
+  </nav>
 
-	<section class="form-section">
-		<div class="form-container">
-			<h1>Tell Your Story</h1>
-			<p class="form-subtitle">Send an anonymous message with a song</p>
+  <main class="mx-auto max-w-5xl px-5 py-16 sm:px-6 sm:py-20">
+    <div class="rounded-[36px] border border-slate-200 bg-white/90 p-8 shadow-2xl sm:p-12">
+      <div class="max-w-2xl">
+        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#2F6A3F]">Send a Message</p>
+        <h1 class="mt-4 text-4xl font-semibold tracking-tight text-[#2F6A3F] sm:text-5xl">Tell Your Story</h1>
+        <p class="mt-4 text-slate-600">Send an anonymous message with a song.</p>
+      </div>
 
-			{{ if .Error }}
-				<div class="alert alert-error">{{ .Error }}</div>
-			{{ end }}
+      <div class="mt-10 space-y-6">
+        {{ if .Error }}
+          <div class="alert alert-error">{{ .Error }}</div>
+        {{ end }}
 
-			{{ if .Message }}
-				<div class="alert alert-success">{{ .Message }}</div>
-			{{ end }}
+        {{ if .Message }}
+          <div class="alert alert-success">{{ .Message }}</div>
+        {{ end }}
 
-			<form method="POST" class="message-form">
-				<div class="form-group">
-					<label for="to_name">To:</label>
-					<input type="text" id="to_name" name="to_name" placeholder="Enter recipient name or nickname" required>
-				</div>
+        <form method="POST" class="space-y-6">
+          <div class="space-y-3">
+            <label for="to_name" class="block text-sm font-semibold text-slate-700">Nama Penerima</label>
+            <input type="text" id="to_name" name="to_name" placeholder="Enter recipient name or nickname" required class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-base text-slate-900 shadow-sm outline-none transition focus:border-[#2F6A3F] focus:ring-2 focus:ring-[#d8e8d7]" />
+          </div>
 
-				<div class="form-group">
-					<label for="message">Your Message:</label>
-					<textarea id="message" name="message" rows="8" placeholder="Write your untold words here..." required></textarea>
-				</div>
+          <div class="space-y-3">
+            <label for="message" class="block text-sm font-semibold text-slate-700">Your Message</label>
+            <textarea id="message" name="message" rows="8" placeholder="Write your untold words here..." required class="min-h-[220px] w-full rounded-[32px] border border-slate-200 bg-slate-50 px-5 py-4 text-base text-slate-900 shadow-sm outline-none transition focus:border-[#2F6A3F] focus:ring-2 focus:ring-[#d8e8d7]"></textarea>
+          </div>
 
-				<div class="form-group">
-					<label for="song_link">Paste Song Link (Spotify only):</label>
-					<input type="url" id="song_link" name="song_link" placeholder="Paste a Spotify track link (open.spotify.com or spotify:track:...)" required>
-					<p class="playlist-help">Only Spotify track links are accepted. Other links will be rejected.</p>
-				</div>
+          <div class="space-y-3">
+            <label for="song_link" class="flex items-center gap-3 text-sm font-semibold text-slate-700">Link Track Spotify</label>
+            <input type="url" id="song_link" name="song_link" placeholder="Paste a Spotify track link (open.spotify.com or spotify:track:...)" required class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-base text-slate-900 shadow-sm outline-none transition focus:border-[#2F6A3F] focus:ring-2 focus:ring-[#d8e8d7]" />
+            <p class="text-sm text-slate-500">Only Spotify track links are accepted. Other links will be rejected.</p>
+          </div>
 
-				<button type="submit" class="btn btn-primary btn-submit">Publish Message 🎵</button>
-			</form>
-		</div>
-	</section>
+          <button type="submit" class="inline-flex w-full items-center justify-center rounded-full bg-[#2F6A3F] px-6 py-4 text-base font-semibold text-white transition hover:bg-[#235334]">Publish Message</button>
+        </form>
+      </div>
+    </div>
+  </main>
 
-	<footer class="footer">
-		<p>&copy; 2024 SendTheSong. This is an anonymous platform. We do not store personal identity.</p>
-	</footer>
+  <footer class="border-t border-slate-200 bg-white/80 py-8 text-center text-sm text-slate-500">
+    <p>&copy; 2026 Anonify. This is an anonymous platform. We do not store personal identity.</p>
+  </footer>
 </body>
 </html>
 {{ end }}

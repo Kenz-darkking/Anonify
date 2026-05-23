@@ -2,76 +2,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>History - SendTheSong</title>
-	<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="/assets/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History - Anonify</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#2F6A3F'
+          },
+          fontFamily: {
+            sans: ['Quicksand', 'ui-sans-serif', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Quicksand', sans-serif; }
+    body::before,
+    body::after { content:''; position:fixed; border-radius:9999px; filter:blur(84px); opacity:.36; pointer-events:none; z-index:-10; }
+    body::before { top:-4rem; right:-8rem; width:20rem; height:20rem; background: rgba(47,106,63,.18); }
+    body::after { bottom:-6rem; left:-8rem; width:24rem; height:24rem; background: rgba(148,175,155,.20); }
+    .nav-link { color: #64748b; transition: color .2s ease, font-weight .2s ease; }
+    .nav-link.active, .nav-link:hover { color: #2F6A3F; font-weight: 600; }
+    .sort-btn { border: 1px solid #d1d5db; border-radius: 9999px; color: #334155; display: inline-flex; align-items: center; justify-content: center; padding: 0.75rem 1.25rem; text-decoration: none; transition: background .2s ease, color .2s ease, border-color .2s ease; }
+    .sort-btn.active { background: #2F6A3F; color: white; border-color: transparent; }
+    .alert { border-width: 1px; border-radius: 1rem; padding: 1rem; }
+    .alert-error { background: #fee2e2; border-color: #fecaca; color: #991b1b; }
+    .alert-success { background: #d1fae5; border-color: #a7f3d0; color: #065f46; }
+    .card-link { position:absolute; inset:0; z-index:10; }
+  </style>
 </head>
-<body>
-	<nav class="navbar">
-		<div class="nav-container">
-			<a href="/" class="logo">sendthesong</a>
-			<div class="nav-menu">
-				<a href="/" class="nav-link">Home</a>
-				<a href="/submit" class="nav-link">Tell Your Story</a>
-				<a href="/browse" class="nav-link">Browse</a>
-				<a href="/history" class="nav-link active">History</a>
-				<a href="/support" class="nav-link">Support</a>
-			</div>
-		</div>
-	</nav>
+<body class="min-h-screen bg-[#f4f5fb] text-slate-900">
+  <nav class="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-xl shadow-sm">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4">
+      <a href="/" class="text-2xl font-semibold tracking-tight text-[#2F6A3F]">sendthesong</a>
+      <div class="hidden items-center gap-5 md:flex">
+        <a href="/" class="nav-link text-sm font-medium">Home</a>
+        <a href="/submit" class="nav-link text-sm font-medium">Express Your Message</a>
+        <a href="/browse" class="nav-link text-sm font-medium">Browse</a>
+        <a href="/history" class="nav-link active text-sm font-medium">History</a>
+        <a href="/support" class="nav-link text-sm font-medium">Support</a>
+      </div>
+    </div>
+  </nav>
 
-	<section class="history-section">
-		<div class="history-container">
-			<h1>All Messages History</h1>
-			<p class="section-subtitle">Every untold story shared through song</p>
+  <main class="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-20">
+    <div class="rounded-[36px] border border-slate-200 bg-white/90 p-8 shadow-2xl sm:p-12">
+      <div class="max-w-3xl">
+        <h1 class="text-4xl font-semibold tracking-tight text-[#2F6A3F] sm:text-5xl">All Messages History</h1>
+        <p class="mt-4 text-slate-600">Every untold story shared through song.</p>
+      </div>
 
-			<div class="sort-options">
-				<a href="/history?sort=latest" class="sort-btn {{ if eq .SortBy "latest" }}active{{ end }}">📅 Latest</a>
-				<a href="/history?sort=oldest" class="sort-btn {{ if eq .SortBy "oldest" }}active{{ end }}">🕐 Oldest</a>
-			</div>
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <a href="/history?sort=latest" class="sort-btn {{ if eq .SortBy "latest" }}active{{ end }}">Latest</a>
+        <a href="/history?sort=oldest" class="sort-btn {{ if eq .SortBy "oldest" }}active{{ end }}">Oldest</a>
+      </div>
 
-			<div class="messages-feed">
-				{{ if not .Messages }}
-					<div class="no-messages"><p>No messages yet. Be the first to share your story!</p></div>
-				{{ else }}
-					{{ range .Messages }}
-						<div class="message-card message-card-feed">
-							<div class="card-header">
-								<span class="card-to">To: {{ .ToName }}</span>
-								<span class="card-date">{{ formatDate .CreatedAt }}</span>
-							</div>
-							<div class="card-content"><p class="card-message">{{ trimMessage .Message }}</p></div>
-							<div class="card-footer">
-								{{ if .SongThumbnail.String }}<img loading="lazy" src="{{ .SongThumbnail.String }}" alt="Album art" class="album-thumb">{{ end }}
-								<div class="song-info">
-									<div class="song-title">{{ .SongTitle.String }}</div>
-									<div class="song-artist">{{ .SongSource.String }}</div>
-								</div>
-								<img src="/assets/spotify-logo.png" alt="Spotify" class="spotify-icon">
-							</div>
-							<a href="/detail/{{ .ID }}" class="card-link"></a>
-						</div>
-					{{ end }}
+      <div class="mt-10 space-y-6">
+        {{ if not .Messages }}
+          <div class="rounded-[32px] border border-slate-200 bg-slate-50 p-8 text-center text-slate-600 shadow-sm">
+            <p>No messages yet. Be the first to share your story!</p>
+          </div>
+        {{ else }}
+          {{ range .Messages }}
+            <div class="relative overflow-hidden rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+              <div class="mb-4 flex items-center justify-between gap-4">
+                <span class="rounded-full bg-[#eef7ee] px-4 py-2 text-sm font-semibold text-[#2F6A3F]">To: {{ .ToName }}</span>
+                <span class="text-sm text-slate-500">{{ formatDate .CreatedAt }}</span>
+              </div>
+              <div class="mb-5">
+                <p class="text-sm leading-7 text-slate-700">{{ trimMessage .Message }}</p>
+              </div>
+              <div class="flex items-center gap-4 border-t border-slate-200 pt-4">
+                {{ if .SongThumbnail.String }}<img loading="lazy" src="{{ .SongThumbnail.String }}" alt="Album art" class="h-16 w-16 rounded-3xl object-cover" />{{ end }}
+                <div class="min-w-0">
+                  <div class="text-sm font-semibold text-slate-900">{{ .SongTitle.String }}</div>
+                  <div class="mt-1 text-xs text-slate-500">{{ .SongSource.String }}</div>
+                </div>
+                <img src="/assets/spotify-logo.png" alt="Spotify" class="ml-auto h-10 w-10" />
+              </div>
+              <a href="/detail/{{ .ID }}" class="card-link"></a>
+            </div>
+          {{ end }}
 
-					{{ if gt .TotalPages 1 }}
-						<div class="pagination">
-							{{ if gt .Page 1 }}<a class="page-link" href="/history?sort={{ .SortBy }}&page={{ sub .Page 1 }}">« Prev</a>{{ end }}
-							{{ range .PageLinks }}
-								{{ if eq . $.Page }}<span class="page-link active">{{ . }}</span>{{ else }}<a class="page-link" href="/history?sort={{ $.SortBy }}&page={{ . }}">{{ . }}</a>{{ end }}
-							{{ end }}
-							{{ if lt .Page .TotalPages }}<a class="page-link" href="/history?sort={{ .SortBy }}&page={{ add .Page 1 }}">Next »</a>{{ end }}
-						</div>
-					{{ end }}
-				{{ end }}
-			</div>
-		</div>
-	</section>
+          {{ if gt .TotalPages 1 }}
+            <div class="flex flex-wrap items-center justify-center gap-3 rounded-[32px] border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700 shadow-sm">
+              {{ if gt .Page 1 }}<a class="rounded-full border border-slate-300 px-4 py-2 text-slate-700 transition hover:border-[#2F6A3F] hover:text-[#2F6A3F]" href="/history?sort={{ .SortBy }}&page={{ sub .Page 1 }}">« Prev</a>{{ end }}
+              {{ range .PageLinks }}
+                {{ if eq . $.Page }}<span class="rounded-full bg-[#2F6A3F] px-4 py-2 text-white">{{ . }}</span>{{ else }}<a class="rounded-full border border-slate-300 px-4 py-2 text-slate-700 transition hover:border-[#2F6A3F] hover:text-[#2F6A3F]" href="/history?sort={{ $.SortBy }}&page={{ . }}">{{ . }}</a>{{ end }}
+              {{ end }}
+              {{ if lt .Page .TotalPages }}<a class="rounded-full border border-slate-300 px-4 py-2 text-slate-700 transition hover:border-[#2F6A3F] hover:text-[#2F6A3F]" href="/history?sort={{ .SortBy }}&page={{ add .Page 1 }}">Next »</a>{{ end }}
+            </div>
+          {{ end }}
+        {{ end }}
+      </div>
+    </div>
+  </main>
 
-	<footer class="footer">
-		<p>&copy; 2024 SendTheSong. This is an anonymous platform. We do not store personal identity.</p>
-	</footer>
+  <footer class="border-t border-slate-200 bg-white/80 py-8 text-center text-sm text-slate-500">
+    <p>&copy; 2026 Anonify. This is an anonymous platform. We do not store personal identity.</p>
+  </footer>
 </body>
 </html>
 {{ end }}
