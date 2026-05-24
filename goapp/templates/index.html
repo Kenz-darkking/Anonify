@@ -4,105 +4,144 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SendTheSong - A bunch of untold words, sent through the song</title>
-  <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/style.css">
+  <title>Anonify - A bunch of untold words, sent through the song</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#2F6A3F'
+          },
+          fontFamily: {
+            sans: ['Quicksand', 'ui-sans-serif', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Quicksand', sans-serif; }
+    body::before,
+    body::after { content:''; position:fixed; border-radius:9999px; filter:blur(84px); opacity:.36; pointer-events:none; z-index:-10; }
+    body::before { top:-4rem; right:-8rem; width:20rem; height:20rem; background: rgba(47,106,63,.18); }
+    body::after { bottom:-6rem; left:-8rem; width:24rem; height:24rem; background: rgba(148,175,155,.20); }
+    .nav-link { color: #64748b; transition: color .2s ease, font-weight .2s ease; }
+    .nav-link.active, .nav-link:hover { color: #2F6A3F; font-weight: 600; }
+    .alert { border-width: 1px; border-radius: 1rem; padding: 1rem; }
+    .alert-error { background: #fee2e2; border-color: #fecaca; color: #991b1b; }
+    .alert-success { background: #d1fae5; border-color: #a7f3d0; color: #065f46; }
+    .card-link { position:absolute; inset:0; z-index:10; }
+  </style>
 </head>
-<body>
-  <nav class="navbar">
-    <div class="nav-container">
-      <a href="/" class="logo">sendthesong</a>
-      <div class="nav-menu">
-        <a href="/" class="nav-link active">Home</a>
-        <a href="/submit" class="nav-link">Tell Your Story</a>
-        <a href="/browse" class="nav-link">Browse</a>
-        <a href="/history" class="nav-link">History</a>
-        <a href="/support" class="nav-link">Support</a>
+<body class="min-h-screen bg-[#f4f5fb] text-slate-900">
+  <nav class="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-xl shadow-sm">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4">
+      <a href="/" class="text-2xl font-semibold tracking-tight text-[#2F6A3F]">Anonify</a>
+      <div class="hidden items-center gap-5 md:flex">
+        <a href="/" class="nav-link active text-sm font-medium">Home</a>
+        <a href="/submit" class="nav-link text-sm font-medium">Express Your Message</a>
+        <a href="/browse" class="nav-link text-sm font-medium">Browse</a>
+        <a href="/history" class="nav-link text-sm font-medium">History</a>
+        <a href="/support" class="nav-link text-sm font-medium">Support</a>
       </div>
     </div>
   </nav>
 
-  <section class="hero">
-    <div class="hero-content">
-      <div class="hero-badge">Anonymous messages, matched with the right song</div>
-      <h1 class="hero-title">a bunch of the untold words, sent through the song</h1>
-      <p class="hero-subtitle">Express your untold message through the song.</p>
-      <form method="GET" action="/browse" class="hero-search">
-        <label class="hero-search-label" for="heroSearch">Search a name to browse messages</label>
-        <div class="hero-search-row">
-          <input id="heroSearch" type="text" name="search" placeholder="Type a name, then browse..." aria-label="Search messages by name">
-          <button type="submit" class="btn btn-primary">Browse</button>
+  <main class="relative">
+    <section class="mx-auto max-w-7xl px-5 py-16 sm:py-20">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="inline-flex rounded-full border border-[#dce9dd] bg-white/80 px-4 py-2 text-sm font-semibold text-[#2F6A3F] shadow-sm">Anonymous messages, matched with the right song</p>
+        <h1 class="mt-6 text-5xl font-bold tracking-tight text-[#2F6A3F] sm:text-6xl">Anonify</h1>
+        <p class="mt-4 text-lg leading-8 text-slate-600">Express your untold message through the song.</p>
+      </div>
+
+      <div class="mx-auto mt-12 max-w-4xl rounded-[32px] border border-slate-200 bg-white/90 p-8 shadow-2xl">
+        <form method="GET" action="/browse" class="space-y-5">
+          <div>
+            <label for="heroSearch" class="mb-2 block text-sm font-semibold text-slate-700">Search a message for you...</label>
+            <div class="flex flex-col gap-3 sm:flex-row">
+              <input id="heroSearch" name="search" type="text" placeholder="Type a name, then browse..." aria-label="Search messages by name" class="flex-1 rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-base text-slate-900 shadow-sm outline-none transition focus:border-[#2F6A3F] focus:ring-2 focus:ring-[#d8e8d7]" />
+              <button type="submit" class="inline-flex items-center justify-center rounded-3xl bg-[#2F6A3F] px-6 py-4 text-base font-semibold text-white transition hover:bg-[#235334]">Browse</button>
+            </div>
+          </div>
+          <p class="text-sm text-slate-500">Search = browse. Enter any name to find matching messages.</p>
+        </form>
+
+        <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <a href="/submit" class="inline-flex items-center justify-center rounded-full bg-[#2F6A3F] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#235334]">
+            <span class="mr-2"></span> Express Your Message
+          </a>
+          <a href="/browse" class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-[#2F6A3F] shadow-sm transition hover:border-[#2F6A3F] hover:text-[#2F6A3F]">
+            <span class="mr-2"></span> Browse the Stories
+          </a>
         </div>
-        <p class="hero-search-note">Search = browse. Enter any name to find matching messages.</p>
-      </form>
-      <div class="cta-buttons">
-        <a href="/submit" class="btn btn-primary">
-          <span class="btn-icon">✏️</span> Tell Your Story
-        </a>
-        <a href="/browse" class="btn btn-secondary">
-          <span class="btn-icon">🔍</span> Browse the Stories
-        </a>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="how-it-works">
-    <h2>How It Works</h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-number">1</div>
-        <h3>Share your Messages</h3>
-        <p>Choose a song and write a heartfelt message to someone special or save it as a little gift for yourself.</p>
+    <section class="mx-auto max-w-7xl px-5 pb-16">
+      <div class="text-center">
+        <h2 class="text-3xl font-bold text-[#2F6A3F]">How It Works</h2>
+        <p class="mx-auto mt-3 max-w-2xl text-slate-600">A simple experience to share and discover anonymous stories with the right song.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-number">2</div>
-        <h3>Browse Messages</h3>
-        <p>Find messages that were written for you. Search your name and uncover heartfelt messages written just for you.</p>
+      <div class="mt-10 grid gap-6 md:grid-cols-3">
+        <div class="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-[#eef7ee] text-lg font-semibold text-[#2F6A3F]">1</div>
+          <h3 class="text-xl font-semibold text-slate-900">Share your Messages</h3>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Choose a song and write a heartfelt message to someone special or save it as a little gift for yourself.</p>
+        </div>
+        <div class="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-[#eef7ee] text-lg font-semibold text-[#2F6A3F]">2</div>
+          <h3 class="text-xl font-semibold text-slate-900">Browse Messages</h3>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Find messages that were written for you. Search your name and uncover heartfelt messages written just for you.</p>
+        </div>
+        <div class="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-[#eef7ee] text-lg font-semibold text-[#2F6A3F]">3</div>
+          <h3 class="text-xl font-semibold text-slate-900">Detail Messages</h3>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Tap on any message card to discover the full story behind it and listen to the song that captures the emotion.</p>
+        </div>
       </div>
-      <div class="feature-card">
-        <div class="feature-number">3</div>
-        <h3>Detail Messages</h3>
-        <p>Tap on any message card to discover the full story behind it and listen to the song that captures the emotion.</p>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="stories-feed">
-    <h2>Messages Feed</h2>
-    <div class="feed-container">
-      <div class="carousel-scroll">
+    <section class="mx-auto max-w-7xl px-5 pb-16">
+      <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <h2 class="text-3xl font-bold text-[#2F6A3F]">Messages Feed</h2>
+        <a href="/browse" class="rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-[#2F6A3F] transition hover:bg-slate-50">See All Messages</a>
+      </div>
+      <div class="grid gap-6 xl:grid-cols-3">
         {{ if not .Messages }}
-          <div class="no-messages"><p>No messages yet. Be the first to share!</p></div>
+          <div class="rounded-[32px] border border-slate-200 bg-white p-8 text-center text-slate-600 shadow-sm">
+            <p>No messages yet. Be the first to share!</p>
+          </div>
         {{ else }}
           {{ range .Messages }}
-            <div class="message-card">
-              <div class="card-header">
-                <span class="card-to">To: {{ .ToName }}</span>
+            <div class="group relative overflow-hidden rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+              <div class="mb-4 flex items-center justify-between">
+                <span class="rounded-full bg-[#eef7ee] px-4 py-2 text-sm font-semibold text-[#2F6A3F]">To: {{ .ToName }}</span>
               </div>
-              <div class="card-content">
-                <p class="card-message">{{ trimMessage .Message }}</p>
-              </div>
-              <div class="card-footer">
-                {{ if .SongThumbnail.String }}<img loading="lazy" src="{{ .SongThumbnail.String }}" alt="Album art" class="album-thumb">{{ end }}
-                <div class="song-info">
-                  <div class="song-title">{{ .SongTitle.String }}</div>
-                  <div class="song-artist">{{ .SongSource.String }}</div>
+              <p class="mb-6 min-h-[6rem] text-sm leading-7 text-slate-700">{{ trimMessage .Message }}</p>
+              <div class="mt-auto flex items-center gap-4 border-t border-slate-200 pt-4">
+                {{ if .SongThumbnail.String }}<img loading="lazy" src="{{ .SongThumbnail.String }}" alt="Album art" class="h-16 w-16 rounded-3xl object-cover" />{{ end }}
+                <div class="min-w-0">
+                  <div class="text-sm font-semibold text-slate-900">{{ .SongTitle.String }}</div>
+                  <div class="mt-1 text-xs text-slate-500">{{ .SongSource.String }}</div>
                 </div>
-                <img src="/assets/spotify-logo.png" alt="Spotify" class="spotify-icon">
+                <img src="/assets/spotify-logo.png" alt="Spotify" class="ml-auto h-10 w-10" />
               </div>
               <a href="/detail/{{ .ID }}" class="card-link"></a>
             </div>
           {{ end }}
         {{ end }}
       </div>
-    </div>
-    <div class="feed-cta">
-      <a href="/browse" class="btn btn-secondary">See All Messages</a>
-    </div>
-  </section>
+    </section>
+  </main>
 
-  <footer class="footer">
-    <p>&copy; 2026 SendTheSong. This is an anonymous platform. We do not store personal identity.</p>
+  <footer class="border-t border-slate-200 bg-white/80 py-8 text-center text-sm text-slate-500">
+    <p>&copy; 2026 Anonify. This is an anonymous platform. We do not store personal identity.</p>
   </footer>
 </body>
 </html>

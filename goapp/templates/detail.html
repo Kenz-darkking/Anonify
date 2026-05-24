@@ -2,92 +2,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>{{ if .MessageItem }}Message for {{ .MessageItem.ToName }}{{ else }}Message{{ end }} - SendTheSong</title>
-	<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="/assets/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ if .MessageItem }}Message for {{ .MessageItem.ToName }}{{ else }}Message{{ end }} - Anonify</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#2F6A3F'
+          },
+          fontFamily: {
+            sans: ['Quicksand', 'ui-sans-serif', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Quicksand', sans-serif; }
+    body::before,
+    body::after { content:''; position:fixed; border-radius:9999px; filter:blur(84px); opacity:.36; pointer-events:none; z-index:-10; }
+    body::before { top:-4rem; right:-8rem; width:20rem; height:20rem; background: rgba(47,106,63,.18); }
+    body::after { bottom:-6rem; left:-8rem; width:24rem; height:24rem; background: rgba(148,175,155,.20); }
+    .nav-link { color: #64748b; transition: color .2s ease, font-weight .2s ease; }
+    .nav-link.active, .nav-link:hover { color: #2F6A3F; font-weight: 600; }
+    .alert { border-width: 1px; border-radius: 1rem; padding: 1rem; }
+    .alert-error { background: #fee2e2; border-color: #fecaca; color: #991b1b; }
+    .card-link { position:absolute; inset:0; z-index:10; }
+  </style>
 </head>
-<body>
-	<nav class="navbar">
-		<div class="nav-container">
-			<a href="/" class="logo">sendthesong</a>
-			<div class="nav-menu">
-				<a href="/" class="nav-link">Home</a>
-				<a href="/submit" class="nav-link">Tell Your Story</a>
-				<a href="/browse" class="nav-link">Browse</a>
-				<a href="/history" class="nav-link">History</a>
-				<a href="/support" class="nav-link">Support</a>
-			</div>
-		</div>
-	</nav>
+<body class="min-h-screen bg-[#f4f5fb] text-slate-900">
+  <nav class="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-xl shadow-sm">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4">
+      <a href="/" class="text-2xl font-semibold tracking-tight text-[#2F6A3F]">sendthesong</a>
+      <div class="hidden items-center gap-5 md:flex">
+        <a href="/" class="nav-link text-sm font-medium">Home</a>
+        <a href="/submit" class="nav-link text-sm font-medium">Express Your Message</a>
+        <a href="/browse" class="nav-link text-sm font-medium">Browse</a>
+        <a href="/history" class="nav-link text-sm font-medium">History</a>
+        <a href="/support" class="nav-link text-sm font-medium">Support</a>
+      </div>
+    </div>
+  </nav>
 
-	<section class="detail-section">
-		<div class="detail-container">
-			{{ if .Error }}
-				<div class="alert alert-error">{{ .Error }}</div>
-				<a href="/browse" class="btn btn-secondary">← Back to Browse</a>
-			{{ else if .MessageItem }}
-				<div class="detail-letter">
-					<div class="letter-header">
-						<h1>To: {{ .MessageItem.ToName }}</h1>
-						<div class="letter-meta">
-							<span class="letter-date">{{ formatDate .MessageItem.CreatedAt }}</span>
-							<button class="btn-share" id="shareBtn" title="Copy link">📋 Share</button>
-						</div>
-					</div>
+  <main class="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-20">
+    <div class="rounded-[36px] border border-slate-200 bg-white/90 p-8 shadow-2xl sm:p-12">
+      {{ if .Error }}
+        <div class="alert alert-error">{{ .Error }}</div>
+        <a href="/browse" class="mt-6 inline-flex rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-[#2F6A3F] transition hover:bg-slate-50">← Back to Browse</a>
+      {{ else if .MessageItem }}
+        <div class="space-y-8">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1 class="text-4xl font-semibold tracking-tight text-[#2F6A3F]">To: {{ .MessageItem.ToName }}</h1>
+              <p class="mt-3 text-sm text-slate-500">{{ formatDate .MessageItem.CreatedAt }}</p>
+            </div>
+            <button class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-[#2F6A3F] transition hover:bg-slate-50" id="shareBtn" title="Copy link">Share</button>
+          </div>
 
-					<div class="letter-content">
-						<p class="letter-message">{{ .MessageItem.Message }}</p>
-					</div>
+          <div class="rounded-[32px] border border-slate-200 bg-slate-50 p-8 text-slate-700 shadow-sm">
+            <p class="whitespace-pre-line text-base leading-8">{{ .MessageItem.Message }}</p>
+          </div>
 
-					{{ if .MessageItem.SongThumbnail.String }}
-						<div class="detail-album-section">
-							<img src="{{ .MessageItem.SongThumbnail.String }}" alt="Album Art" class="detail-album-art">
-						</div>
-					{{ end }}
+          {{ if .MessageItem.SongThumbnail.String }}
+            <div class="overflow-hidden rounded-[32px] border border-slate-200 bg-white p-4 shadow-sm">
+              <img src="{{ .MessageItem.SongThumbnail.String }}" alt="Album Art" class="h-full w-full rounded-[28px] object-cover" />
+            </div>
+          {{ end }}
 
-					<div class="spotify-player-section">
-						<div class="player-info">
-							<h3>{{ .MessageItem.SongTitle.String }}</h3>
-							<p>{{ .MessageItem.SongSource.String }}</p>
-						</div>
+          <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+            <div class="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm">
+              <h3 class="text-2xl font-semibold text-slate-900">{{ .MessageItem.SongTitle.String }}</h3>
+              <p class="mt-2 text-sm text-slate-500">{{ .MessageItem.SongSource.String }}</p>
+              {{ if eq .MessageItem.SongSource.String "audio" }}
+                <audio controls class="mt-6 w-full rounded-[28px] bg-slate-900/5" src="{{ .MessageItem.SongAudioURL.String }}"></audio>
+              {{ else if .MessageItem.SongEmbedURL.String }}
+                <iframe class="mt-6 h-44 w-full rounded-[28px] border-0" src="{{ .MessageItem.SongEmbedURL.String }}" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+              {{ end }}
+            </div>
+            <div class="rounded-[32px] border border-slate-200 bg-[#f8faf7] p-6 shadow-sm">
+              <p class="text-sm leading-7 text-slate-600">Explore the story and feel the message through the song. Share or save the link with someone who needs this moment.</p>
+            </div>
+          </div>
 
-						{{ if eq .MessageItem.SongSource.String "audio" }}
-							<audio controls style="width:100%;" src="{{ .MessageItem.SongAudioURL.String }}"></audio>
-						{{ else if .MessageItem.SongEmbedURL.String }}
-							<iframe style="border-radius:12px" src="{{ .MessageItem.SongEmbedURL.String }}" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-						{{ end }}
-					</div>
+          <div class="flex flex-wrap gap-4">
+            <a href="/browse" class="inline-flex rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-[#2F6A3F] transition hover:bg-slate-50">← Back to Browse</a>
+            <a href="/" class="inline-flex rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-[#2F6A3F] transition hover:bg-slate-50">Home</a>
+          </div>
+        </div>
+      {{ end }}
+    </div>
+  </main>
 
-					<div class="detail-actions">
-						<a href="/browse" class="btn btn-secondary">← Back to Browse</a>
-						<a href="/" class="btn btn-secondary">Home</a>
-					</div>
-				</div>
-			{{ end }}
-		</div>
-	</section>
+  <footer class="border-t border-slate-200 bg-white/80 py-8 text-center text-sm text-slate-500">
+    <p>&copy; 2026 Anonify. This is an anonymous platform. We do not store personal identity.</p>
+  </footer>
 
-	<footer class="footer">
-		<p>&copy; 2024 SendTheSong. This is an anonymous platform. We do not store personal identity.</p>
-	</footer>
-
-	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			const shareBtn = document.getElementById('shareBtn');
-			if(shareBtn) {
-				shareBtn.addEventListener('click', function() {
-					const url = window.location.href;
-					navigator.clipboard.writeText(url).then(() => {
-						alert('Link copied to clipboard! 🎵');
-					}).catch(() => {
-						alert('Failed to copy link');
-					});
-				});
-			}
-		});
-	</script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const shareBtn = document.getElementById('shareBtn');
+      if (shareBtn) {
+        shareBtn.addEventListener('click', function() {
+          const url = window.location.href;
+          navigator.clipboard.writeText(url).then(() => {
+            alert('Link copied to clipboard! 🎵');
+          }).catch(() => {
+            alert('Failed to copy link');
+          });
+        });
+      }
+    });
+  </script>
 </body>
 </html>
 {{ end }}
